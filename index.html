@@ -1,0 +1,1223 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gestão de Aluguéis</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0e0c;
+    --surface: #1a1916;
+    --surface2: #242320;
+    --border: #2e2c28;
+    --gold: #c9a84c;
+    --gold-light: #e8c97a;
+    --gold-dim: #6b5a2a;
+    --green: #4caf7d;
+    --green-dim: #1e3d2f;
+    --red: #e05c5c;
+    --red-dim: #3d1e1e;
+    --text: #e8e4dc;
+    --text-muted: #7a7568;
+    --text-dim: #4a4840;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    border-bottom: 1px solid var(--border);
+    padding: 24px 40px;
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    background: linear-gradient(180deg, #1a1510 0%, var(--bg) 100%);
+  }
+
+  header h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 28px;
+    color: var(--gold-light);
+    letter-spacing: -0.5px;
+  }
+
+  header span {
+    color: var(--text-muted);
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  /* LAYOUT */
+  .app {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    height: calc(100vh - 73px);
+  }
+
+  /* SIDEBAR */
+  .sidebar {
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    background: var(--surface);
+  }
+
+  .sidebar-section {
+    border-bottom: 1px solid var(--border);
+    padding: 16px;
+  }
+
+  .sidebar-section h3 {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+  }
+
+  .condo-btn {
+    width: 100%;
+    background: none;
+    border: 1px solid transparent;
+    color: var(--text);
+    padding: 9px 12px;
+    text-align: left;
+    cursor: pointer;
+    border-radius: 6px;
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+    transition: all 0.15s;
+  }
+
+  .condo-btn:hover { background: var(--surface2); border-color: var(--border); }
+  .condo-btn.active { background: var(--gold-dim); border-color: var(--gold); color: var(--gold-light); }
+
+  .condo-btn .apt-count {
+    font-size: 10px;
+    color: var(--text-muted);
+    background: var(--surface2);
+    padding: 2px 7px;
+    border-radius: 10px;
+  }
+
+  .condo-btn.active .apt-count { background: rgba(201,168,76,0.2); color: var(--gold); }
+
+  /* BALANCE in sidebar */
+  .balance-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 8px;
+  }
+
+  .balance-card .label { color: var(--text-muted); font-size: 10px; letter-spacing: 1px; margin-bottom: 4px; }
+  .balance-card .value { font-size: 18px; }
+  .balance-card .value.pos { color: var(--green); }
+  .balance-card .value.neg { color: var(--red); }
+  .balance-card .value.gold { color: var(--gold-light); font-family: 'DM Serif Display', serif; }
+
+  /* MAIN */
+  .main {
+    overflow-y: auto;
+    padding: 28px 36px;
+  }
+
+  .main-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 28px;
+  }
+
+  .main-header h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    color: var(--gold-light);
+  }
+
+  .main-header .sub {
+    color: var(--text-muted);
+    font-size: 11px;
+    margin-top: 2px;
+  }
+
+  .btn {
+    background: var(--gold);
+    color: #1a1500;
+    border: none;
+    padding: 9px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    transition: background 0.15s;
+  }
+
+  .btn:hover { background: var(--gold-light); }
+
+  .btn-sec {
+    background: var(--surface2);
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    transition: all 0.15s;
+  }
+
+  .btn-sec:hover { border-color: var(--gold-dim); color: var(--gold-light); }
+
+  .btn-danger {
+    background: var(--red-dim);
+    color: var(--red);
+    border: 1px solid #5a2020;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    transition: all 0.15s;
+  }
+
+  .btn-danger:hover { background: #4a1818; }
+
+  /* SUMMARY CARDS */
+  .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+
+  .sum-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 18px;
+  }
+
+  .sum-card .lbl { color: var(--text-muted); font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 6px; }
+  .sum-card .val { font-size: 22px; font-family: 'DM Serif Display', serif; }
+  .sum-card .val.green { color: var(--green); }
+  .sum-card .val.red { color: var(--red); }
+  .sum-card .val.gold { color: var(--gold-light); }
+
+  /* SECTION TITLE */
+  .section-title {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* TABLE */
+  .table-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 24px;
+  }
+
+  table { width: 100%; border-collapse: collapse; }
+
+  thead tr { background: var(--surface2); border-bottom: 1px solid var(--border); }
+
+  th {
+    text-align: left;
+    padding: 10px 14px;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    font-weight: 400;
+  }
+
+  td {
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+  }
+
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+
+  .tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    letter-spacing: 0.5px;
+  }
+
+  .tag-rec { background: var(--green-dim); color: var(--green); }
+  .tag-exp { background: var(--red-dim); color: var(--red); }
+  .tag-fix { background: rgba(201,168,76,0.1); color: var(--gold); }
+  .tag-anual { background: rgba(100,80,180,0.2); color: #a090e0; }
+
+  .amount-pos { color: var(--green); }
+  .amount-neg { color: var(--red); }
+
+  /* MODAL */
+  .modal-bg {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.75);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modal-bg.open { display: flex; }
+
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 28px;
+    width: 460px;
+    max-width: 95vw;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  .modal h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 20px;
+    color: var(--gold-light);
+    margin-bottom: 20px;
+  }
+
+  .field { margin-bottom: 14px; }
+
+  .field label {
+    display: block;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+  }
+
+  .field input, .field select, .field textarea {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    padding: 9px 12px;
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  .field input:focus, .field select:focus, .field textarea:focus {
+    border-color: var(--gold-dim);
+  }
+
+  .field select option { background: var(--surface2); }
+
+  .modal-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 20px;
+  }
+
+  /* TYPE TOGGLE */
+  .type-toggle {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .type-opt {
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    color: var(--text-muted);
+    cursor: pointer;
+    text-align: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    transition: all 0.15s;
+  }
+
+  .type-opt.sel-rec { background: var(--green-dim); border-color: #2e6b4f; color: var(--green); }
+  .type-opt.sel-exp { background: var(--red-dim); border-color: #6b2e2e; color: var(--red); }
+
+  /* EMPTY */
+  .empty {
+    text-align: center;
+    padding: 40px;
+    color: var(--text-dim);
+  }
+
+  .empty .ico { font-size: 36px; margin-bottom: 10px; opacity: 0.4; }
+
+  /* FILTER BAR */
+  .filter-bar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .filter-bar select, .filter-bar input {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    padding: 7px 10px;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    outline: none;
+  }
+
+  .filter-bar select:focus, .filter-bar input:focus { border-color: var(--gold-dim); }
+
+  /* APT GRID */
+  .apt-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+
+  .apt-chip {
+    padding: 5px 12px;
+    border-radius: 5px;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    color: var(--text-muted);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.12s;
+  }
+
+  .apt-chip:hover { border-color: var(--gold-dim); color: var(--gold); }
+  .apt-chip.has-income { border-color: #2e6b4f; background: var(--green-dim); color: var(--green); }
+  .apt-chip.has-expense { border-color: #6b2e2e; background: var(--red-dim); color: var(--red); }
+  .apt-chip.has-both { border-color: var(--gold-dim); background: rgba(201,168,76,0.1); color: var(--gold); }
+
+  /* scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--gold-dim); }
+
+  @media (max-width: 768px) {
+    .app { grid-template-columns: 1fr; height: auto; }
+    .sidebar { height: auto; border-right: none; border-bottom: 1px solid var(--border); }
+    .main { padding: 20px 16px; }
+    .summary-grid { grid-template-columns: 1fr 1fr; }
+    header { padding: 16px 20px; }
+  }
+
+  /* LOGIN SCREEN */
+  #login-screen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: var(--bg);
+    background-image: radial-gradient(ellipse at 50% 30%, #1a1408 0%, var(--bg) 70%);
+  }
+
+  .login-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 40px 36px;
+    width: 360px;
+    max-width: 95vw;
+    text-align: center;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.6);
+  }
+
+  .login-box .login-icon {
+    font-size: 36px;
+    margin-bottom: 16px;
+    opacity: 0.8;
+  }
+
+  .login-box h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 24px;
+    color: var(--gold-light);
+    margin-bottom: 6px;
+  }
+
+  .login-box p {
+    color: var(--text-muted);
+    font-size: 11px;
+    letter-spacing: 1px;
+    margin-bottom: 28px;
+  }
+
+  .login-field {
+    position: relative;
+    margin-bottom: 14px;
+  }
+
+  .login-field input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    padding: 12px 44px 12px 14px;
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+    outline: none;
+    text-align: center;
+    letter-spacing: 3px;
+    transition: border-color 0.15s;
+  }
+
+  .login-field input:focus { border-color: var(--gold-dim); }
+
+  .login-field .eye-btn {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 16px;
+    padding: 0;
+    line-height: 1;
+  }
+
+  .login-field .eye-btn:hover { color: var(--gold); }
+
+  .btn-login {
+    width: 100%;
+    background: var(--gold);
+    color: #1a1500;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    margin-top: 4px;
+    transition: background 0.15s;
+  }
+
+  .btn-login:hover { background: var(--gold-light); }
+
+  .login-error {
+    color: var(--red);
+    font-size: 11px;
+    margin-top: 10px;
+    min-height: 16px;
+    letter-spacing: 0.5px;
+  }
+
+  .login-hint {
+    color: var(--text-dim);
+    font-size: 10px;
+    margin-top: 20px;
+    letter-spacing: 0.5px;
+  }
+
+  #app-content { display: none; }
+
+  /* CHANGE PASSWORD */
+  .change-pass-btn {
+    background: none;
+    border: none;
+    color: var(--text-dim);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    cursor: pointer;
+    padding: 0;
+    letter-spacing: 0.5px;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .change-pass-btn:hover { color: var(--text-muted); }
+</style>
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-icon">🏢</div>
+    <h2>Gestão de Aluguéis</h2>
+    <p>ACESSO RESTRITO</p>
+    <div class="login-field">
+      <input type="password" id="login-input" placeholder="Senha" onkeydown="if(event.key==='Enter')doLogin()">
+      <button class="eye-btn" onclick="toggleEye()" title="Mostrar/ocultar">👁</button>
+    </div>
+    <button class="btn-login" onclick="doLogin()">Entrar</button>
+    <div class="login-error" id="login-error"></div>
+    <div class="login-hint" id="first-time-hint" style="display:none">
+      Primeira vez? Cadastre uma senha de sua escolha.
+    </div>
+  </div>
+</div>
+
+<!-- APP (hidden until login) -->
+<div id="app-content">
+
+<header>
+  <h1>Gestão de Aluguéis</h1>
+  <span>Controle Financeiro</span>
+  <div style="margin-left:auto;display:flex;gap:12px;align-items:center;">
+    <div id="sheets-status" style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-muted);">
+      <span id="sheets-dot" style="width:7px;height:7px;border-radius:50%;background:var(--green);display:inline-block;"></span>
+      <span id="sheets-label">Sheets ativo</span>
+    </div>
+    <button class="change-pass-btn" onclick="openChangePass()">Alterar senha</button>
+    <button class="btn-sec" onclick="doLogout()" style="font-size:11px;padding:6px 12px;">Sair</button>
+  </div>
+</header>
+
+<div class="app">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <h3>Visão Geral</h3>
+      <div class="balance-card">
+        <div class="label">Saldo Total</div>
+        <div class="value gold" id="sb-total">R$ 0,00</div>
+      </div>
+      <div class="balance-card">
+        <div class="label">Total Receitas</div>
+        <div class="value pos" id="sb-rec">R$ 0,00</div>
+      </div>
+      <div class="balance-card">
+        <div class="label">Total Despesas</div>
+        <div class="value neg" id="sb-exp">R$ 0,00</div>
+      </div>
+    </div>
+    <div class="sidebar-section">
+      <h3>Condomínios</h3>
+      <button class="condo-btn active" data-condo="all" onclick="selectCondo('all')">
+        Todos os Condomínios <span class="apt-count" id="count-all">0</span>
+      </button>
+      <button class="condo-btn" data-condo="241" onclick="selectCondo('241')">
+        Cond. 241 <span class="apt-count">7 apts</span>
+      </button>
+      <button class="condo-btn" data-condo="715" onclick="selectCondo('715')">
+        Cond. 715 <span class="apt-count">9 apts</span>
+      </button>
+      <button class="condo-btn" data-condo="1244" onclick="selectCondo('1244')">
+        Cond. 1244 <span class="apt-count">15 apts</span>
+      </button>
+      <button class="condo-btn" data-condo="1245" onclick="selectCondo('1245')">
+        Cond. 1245 <span class="apt-count">13 apts</span>
+      </button>
+    </div>
+    <div class="sidebar-section">
+      <h3>Filtro de Período</h3>
+      <div class="field">
+        <label>Mês</label>
+        <select id="filter-month" onchange="renderAll()">
+          <option value="">Todos</option>
+          <option value="01">Janeiro</option><option value="02">Fevereiro</option>
+          <option value="03">Março</option><option value="04">Abril</option>
+          <option value="05">Maio</option><option value="06">Junho</option>
+          <option value="07">Julho</option><option value="08">Agosto</option>
+          <option value="09">Setembro</option><option value="10">Outubro</option>
+          <option value="11">Novembro</option><option value="12">Dezembro</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Ano</label>
+        <select id="filter-year" onchange="renderAll()">
+          <option value="">Todos</option>
+          <option value="2024">2024</option>
+          <option value="2025">2025</option>
+          <option value="2026" selected>2026</option>
+          <option value="2027">2027</option>
+        </select>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="main" id="main-content">
+    <div class="main-header">
+      <div>
+        <h2 id="main-title">Todos os Condomínios</h2>
+        <div class="sub" id="main-sub">Visão consolidada</div>
+      </div>
+      <div style="display:flex;gap:10px;">
+        <button class="btn-sec" onclick="openModal('expense')">+ Despesa</button>
+        <button class="btn" onclick="openModal('income')">+ Receita</button>
+      </div>
+    </div>
+
+    <!-- SUMMARY -->
+    <div class="summary-grid">
+      <div class="sum-card">
+        <div class="lbl">Receitas</div>
+        <div class="val green" id="card-rec">R$ 0,00</div>
+      </div>
+      <div class="sum-card">
+        <div class="lbl">Despesas</div>
+        <div class="val red" id="card-exp">R$ 0,00</div>
+      </div>
+      <div class="sum-card">
+        <div class="lbl">Saldo</div>
+        <div class="val gold" id="card-bal">R$ 0,00</div>
+      </div>
+    </div>
+
+    <!-- APT OVERVIEW -->
+    <div id="apt-section">
+      <div class="section-title">Apartamentos</div>
+      <div class="apt-grid" id="apt-grid"></div>
+    </div>
+
+    <!-- TRANSACTIONS -->
+    <div class="section-title">Lançamentos</div>
+
+    <div class="filter-bar">
+      <select id="f-type" onchange="renderAll()">
+        <option value="">Todos os tipos</option>
+        <option value="income">Receitas</option>
+        <option value="expense">Despesas</option>
+      </select>
+      <select id="f-cat" onchange="renderAll()">
+        <option value="">Todas as categorias</option>
+        <option value="aluguel">Aluguel</option>
+        <option value="agua">Água</option>
+        <option value="luz">Luz</option>
+        <option value="internet">Internet</option>
+        <option value="iptu">IPTU</option>
+        <option value="outro">Outro</option>
+      </select>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Data</th>
+            <th>Condomínio</th>
+            <th>Apartamento</th>
+            <th>Categoria</th>
+            <th>Descrição</th>
+            <th>Tipo</th>
+            <th>Valor</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="tx-body">
+          <tr><td colspan="8"><div class="empty"><div class="ico">🏢</div>Nenhum lançamento encontrado</div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</div>
+
+<!-- MODAL -->
+<div class="modal-bg" id="modal-bg" onclick="closeModalBg(event)">
+  <div class="modal">
+    <h3 id="modal-title">Novo Lançamento</h3>
+
+    <div class="type-toggle">
+      <div class="type-opt sel-rec" id="tog-income" onclick="setType('income')">↑ Receita</div>
+      <div class="type-opt" id="tog-expense" onclick="setType('expense')">↓ Despesa</div>
+    </div>
+
+    <div class="field">
+      <label>Condomínio</label>
+      <select id="m-condo" onchange="updateAptList()">
+        <option value="">Selecione...</option>
+        <option value="241">Condomínio 241</option>
+        <option value="715">Condomínio 715</option>
+        <option value="1244">Condomínio 1244</option>
+        <option value="1245">Condomínio 1245</option>
+      </select>
+    </div>
+
+    <div class="field" id="apt-field">
+      <label>Apartamento <span style="color:var(--text-dim)">(opcional para despesas fixas)</span></label>
+      <select id="m-apt">
+        <option value="">— Selecione o condomínio primeiro —</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Categoria</label>
+      <select id="m-cat" onchange="updateCatHint()">
+        <option value="aluguel">Aluguel</option>
+        <option value="agua">Água (Despesa Fixa)</option>
+        <option value="luz">Luz (Despesa Fixa)</option>
+        <option value="internet">Internet (Despesa Fixa)</option>
+        <option value="iptu">IPTU (Despesa Anual)</option>
+        <option value="outro">Outro</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Descrição</label>
+      <input type="text" id="m-desc" placeholder="Ex: Aluguel apt 12 - mai/2026">
+    </div>
+
+    <div class="field">
+      <label>Valor (R$)</label>
+      <input type="number" id="m-val" placeholder="0,00" step="0.01" min="0">
+    </div>
+
+    <div class="field">
+      <label>Data</label>
+      <input type="date" id="m-date">
+    </div>
+
+    <div class="field">
+      <label>Observação</label>
+      <input type="text" id="m-obs" placeholder="Opcional">
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-sec" onclick="closeModal()">Cancelar</button>
+      <button class="btn" onclick="saveEntry()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────────────
+const CONDOS = {
+  '241':  { name: 'Cond. 241',  apts: Array.from({length:7},(_,i)=>(i+12).toString()) },
+  '715':  { name: 'Cond. 715',  apts: Array.from({length:9},(_,i)=>(i+1).toString()) },
+  '1244': { name: 'Cond. 1244', apts: Array.from({length:15},(_,i)=>(i+1).toString()) },
+  '1245': { name: 'Cond. 1245', apts: [...Array.from({length:11},(_,i)=>(i+1).toString()),'35','85'] }
+};
+
+let entries = JSON.parse(localStorage.getItem('rental_entries') || '[]');
+let currentCondo = 'all';
+let modalType = 'income';
+let editId = null;
+
+function save() { localStorage.setItem('rental_entries', JSON.stringify(entries)); }
+
+// ── HELPERS ───────────────────────────────────────────────────────────────────
+function fmt(v) {
+  return 'R$ ' + Math.abs(v).toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2});
+}
+
+function fmtSigned(v) {
+  const s = v >= 0 ? '+' : '-';
+  return s + ' ' + fmt(v);
+}
+
+function getFiltered() {
+  const month = document.getElementById('filter-month').value;
+  const year  = document.getElementById('filter-year').value;
+  const fType = document.getElementById('f-type').value;
+  const fCat  = document.getElementById('f-cat').value;
+
+  return entries.filter(e => {
+    if (currentCondo !== 'all' && e.condo !== currentCondo) return false;
+    if (month && e.date && !e.date.startsWith(`${year || ''}`)) {}
+    if (year  && e.date && !e.date.startsWith(year)) return false;
+    if (month && e.date) {
+      const m = e.date.split('-')[1];
+      if (m !== month) return false;
+    }
+    if (fType && e.type !== fType) return false;
+    if (fCat  && e.cat  !== fCat)  return false;
+    return true;
+  });
+}
+
+// ── CONDO SELECT ──────────────────────────────────────────────────────────────
+function selectCondo(c) {
+  currentCondo = c;
+  document.querySelectorAll('.condo-btn').forEach(b => b.classList.toggle('active', b.dataset.condo === c));
+  document.getElementById('main-title').textContent = c === 'all' ? 'Todos os Condomínios' : `Condomínio ${c}`;
+  document.getElementById('main-sub').textContent   = c === 'all' ? 'Visão consolidada' : CONDOS[c]?.apts.length + ' apartamentos';
+  document.getElementById('apt-section').style.display = c === 'all' ? 'none' : 'block';
+  renderAll();
+}
+
+// ── RENDER ────────────────────────────────────────────────────────────────────
+function renderAll() {
+  const filtered = getFiltered();
+  const allFiltered = (() => {
+    const month = document.getElementById('filter-month').value;
+    const year  = document.getElementById('filter-year').value;
+    return entries.filter(e => {
+      if (year  && e.date && !e.date.startsWith(year)) return false;
+      if (month && e.date) { if (e.date.split('-')[1] !== month) return false; }
+      return true;
+    });
+  })();
+
+  // Summary cards (current view)
+  const rec = filtered.filter(e => e.type === 'income').reduce((s,e) => s+e.val, 0);
+  const exp = filtered.filter(e => e.type === 'expense').reduce((s,e) => s+e.val, 0);
+  document.getElementById('card-rec').textContent = fmt(rec);
+  document.getElementById('card-exp').textContent = fmt(exp);
+  const bal = rec - exp;
+  const balEl = document.getElementById('card-bal');
+  balEl.textContent = fmt(bal);
+  balEl.className = 'val ' + (bal >= 0 ? 'green' : 'red');
+
+  // Sidebar totals (all condos)
+  const allRec = allFiltered.filter(e => e.type === 'income').reduce((s,e) => s+e.val, 0);
+  const allExp = allFiltered.filter(e => e.type === 'expense').reduce((s,e) => s+e.val, 0);
+  const allBal = allRec - allExp;
+  document.getElementById('sb-rec').textContent = fmt(allRec);
+  document.getElementById('sb-exp').textContent = fmt(allExp);
+  document.getElementById('sb-total').textContent = fmt(allBal);
+  document.getElementById('sb-total').className = 'value ' + (allBal >= 0 ? 'gold' : 'neg');
+
+  // Count badge
+  document.getElementById('count-all').textContent = allFiltered.length;
+
+  // Apt grid
+  if (currentCondo !== 'all') {
+    const grid = document.getElementById('apt-grid');
+    const apts = CONDOS[currentCondo].apts;
+    grid.innerHTML = apts.map(apt => {
+      const aptEntries = filtered.filter(e => e.apt === apt);
+      const hasInc = aptEntries.some(e => e.type === 'income');
+      const hasExp = aptEntries.some(e => e.type === 'expense');
+      const cls = hasInc && hasExp ? 'has-both' : hasInc ? 'has-income' : hasExp ? 'has-expense' : '';
+      return `<div class="apt-chip ${cls}" onclick="filterApt('${apt}')" title="Apt ${apt}">Apt ${apt}</div>`;
+    }).join('');
+  }
+
+  // Table
+  const tbody = document.getElementById('tx-body');
+  if (filtered.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="8"><div class="empty"><div class="ico">📋</div>Nenhum lançamento encontrado</div></td></tr>`;
+    return;
+  }
+
+  const sorted = [...filtered].sort((a,b) => (b.date||'').localeCompare(a.date||''));
+  tbody.innerHTML = sorted.map(e => {
+    const catLabels = {aluguel:'Aluguel',agua:'Água',luz:'Luz',internet:'Internet',iptu:'IPTU',outro:'Outro'};
+    const catTag = e.cat === 'iptu' ? 'anual' : (e.cat === 'aluguel' ? '' : 'fix');
+    const catCls = e.cat === 'iptu' ? 'tag-anual' : (e.cat === 'aluguel' ? 'tag-rec' : 'tag-fix');
+    const condoName = CONDOS[e.condo]?.name || e.condo;
+    const dateStr = e.date ? new Date(e.date+'T12:00:00').toLocaleDateString('pt-BR') : '—';
+    return `<tr>
+      <td>${dateStr}</td>
+      <td>${condoName}</td>
+      <td>${e.apt ? 'Apt '+e.apt : '<span style="color:var(--text-dim)">—</span>'}</td>
+      <td><span class="tag ${catCls}">${catLabels[e.cat]||e.cat}</span></td>
+      <td>${e.desc||'—'} ${e.obs ? '<span style="color:var(--text-dim);font-size:11px">· '+e.obs+'</span>' : ''}</td>
+      <td><span class="tag ${e.type==='income'?'tag-rec':'tag-exp'}">${e.type==='income'?'Receita':'Despesa'}</span></td>
+      <td class="${e.type==='income'?'amount-pos':'amount-neg'}">${e.type==='income'?'+':'-'} ${fmt(e.val)}</td>
+      <td><button class="btn-danger" onclick="deleteEntry('${e.id}')">✕</button></td>
+    </tr>`;
+  }).join('');
+}
+
+function filterApt(apt) {
+  // Quick highlight — for now just scroll to table filter
+  renderAll();
+}
+
+// ── MODAL ─────────────────────────────────────────────────────────────────────
+function openModal(type) {
+  editId = null;
+  document.getElementById('modal-title').textContent = type === 'income' ? 'Nova Receita' : 'Nova Despesa';
+  document.getElementById('modal-bg').classList.add('open');
+  setType(type);
+  // default date today
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('m-date').value = today;
+  document.getElementById('m-val').value = '';
+  document.getElementById('m-desc').value = '';
+  document.getElementById('m-obs').value = '';
+  document.getElementById('m-apt').value = '';
+  // pre-select current condo
+  if (currentCondo !== 'all') {
+    document.getElementById('m-condo').value = currentCondo;
+    updateAptList();
+  } else {
+    document.getElementById('m-condo').value = '';
+    document.getElementById('m-apt').innerHTML = '<option value="">— Selecione o condomínio primeiro —</option>';
+  }
+}
+
+function closeModal() { document.getElementById('modal-bg').classList.remove('open'); }
+function closeModalBg(e) { if (e.target.id === 'modal-bg') closeModal(); }
+
+function setType(t) {
+  modalType = t;
+  document.getElementById('tog-income').className  = 'type-opt ' + (t==='income'  ? 'sel-rec' : '');
+  document.getElementById('tog-expense').className = 'type-opt ' + (t==='expense' ? 'sel-exp' : '');
+  // auto-set category
+  if (t === 'income') {
+    document.getElementById('m-cat').value = 'aluguel';
+  }
+}
+
+function updateCatHint() {}
+
+function updateAptList() {
+  const condo = document.getElementById('m-condo').value;
+  const sel = document.getElementById('m-apt');
+  if (!condo) {
+    sel.innerHTML = '<option value="">— Selecione o condomínio primeiro —</option>';
+    return;
+  }
+  const apts = CONDOS[condo].apts;
+  sel.innerHTML = '<option value="">Geral (sem apt específico)</option>' +
+    apts.map(a => `<option value="${a}">Apt ${a}</option>`).join('');
+}
+
+function saveEntry() {
+  const condo = document.getElementById('m-condo').value;
+  const apt   = document.getElementById('m-apt').value;
+  const cat   = document.getElementById('m-cat').value;
+  const desc  = document.getElementById('m-desc').value.trim();
+  const val   = parseFloat(document.getElementById('m-val').value);
+  const date  = document.getElementById('m-date').value;
+  const obs   = document.getElementById('m-obs').value.trim();
+
+  if (!condo) { alert('Selecione o condomínio.'); return; }
+  if (!val || val <= 0) { alert('Informe um valor válido.'); return; }
+
+  const entry = {
+    id: Date.now().toString(),
+    type: modalType,
+    condo, apt, cat, desc, val, date, obs
+  };
+
+  entries.push(entry);
+  save();
+  closeModal();
+  renderAll();
+  sheetsAppendRow(entry);
+}
+
+function deleteEntry(id) {
+  if (!confirm('Remover este lançamento?')) return;
+  entries = entries.filter(e => e.id !== id);
+  save();
+  renderAll();
+  sheetsDeleteRow(id);
+}
+
+// ── GOOGLE SHEETS INTEGRATION (Apps Script Webhook) ───────────────────────────
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzFmUgkdOYv3AhB3I8jIpWoiI5S6uLtquNciexnTYLXR4CuyST2b1wVyFy5s3Aovh8M/exec';
+
+function sheetsSetStatus(state) {
+  const dot   = document.getElementById('sheets-dot');
+  const label = document.getElementById('sheets-label');
+  if (state === 'connected') {
+    dot.style.background = 'var(--green)';
+    label.textContent = 'Sheets ativo';
+  } else if (state === 'syncing') {
+    dot.style.background = 'var(--gold)';
+    label.textContent = 'Sincronizando...';
+  } else if (state === 'error') {
+    dot.style.background = 'var(--red)';
+    label.textContent = 'Erro no Sheets';
+  }
+}
+
+async function sheetsPost(payload) {
+  sheetsSetStatus('syncing');
+  try {
+    const res = await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    // no-cors means we can't read the response, but if no exception it worked
+    sheetsSetStatus('connected');
+  } catch(e) {
+    console.error('Sheets sync error:', e);
+    sheetsSetStatus('error');
+  }
+}
+
+async function sheetsAppendRow(entry) {
+  await sheetsPost({ action: 'append', entry });
+}
+
+async function sheetsDeleteRow(id) {
+  await sheetsPost({ action: 'delete', id });
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+selectCondo('all');
+renderAll();
+sheetsSetStatus('connected');
+</script>
+
+</div> <!-- /app-content -->
+
+<!-- CHANGE PASSWORD MODAL -->
+<div class="modal-bg" id="change-pass-modal" onclick="if(event.target.id==='change-pass-modal')closeChangePass()">
+  <div class="modal" style="max-width:340px;">
+    <h3>Alterar Senha</h3>
+    <div class="field">
+      <label>Senha Atual</label>
+      <input type="password" id="cp-current" placeholder="••••••••">
+    </div>
+    <div class="field">
+      <label>Nova Senha</label>
+      <input type="password" id="cp-new" placeholder="••••••••">
+    </div>
+    <div class="field">
+      <label>Confirmar Nova Senha</label>
+      <input type="password" id="cp-confirm" placeholder="••••••••">
+    </div>
+    <div class="login-error" id="cp-error"></div>
+    <div class="modal-actions">
+      <button class="btn-sec" onclick="closeChangePass()">Cancelar</button>
+      <button class="btn" onclick="doChangePass()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── AUTH ──────────────────────────────────────────────────────────────────────
+const HASH_KEY = 'rental_pwd_hash';
+const SESSION_KEY = 'rental_session';
+
+async function sha256(msg) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(msg));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+async function doLogin() {
+  const pwd = document.getElementById('login-input').value;
+  if (!pwd) { showLoginError('Digite a senha.'); return; }
+
+  const stored = localStorage.getItem(HASH_KEY);
+
+  // First time: set the password
+  if (!stored) {
+    if (pwd.length < 4) { showLoginError('A senha deve ter ao menos 4 caracteres.'); return; }
+    const hash = await sha256(pwd);
+    localStorage.setItem(HASH_KEY, hash);
+    grantAccess();
+    return;
+  }
+
+  const hash = await sha256(pwd);
+  if (hash === stored) {
+    grantAccess();
+  } else {
+    showLoginError('Senha incorreta.');
+    document.getElementById('login-input').value = '';
+    document.getElementById('login-input').focus();
+  }
+}
+
+function grantAccess() {
+  sessionStorage.setItem(SESSION_KEY, '1');
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app-content').style.display = 'block';
+}
+
+function doLogout() {
+  sessionStorage.removeItem(SESSION_KEY);
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('app-content').style.display = 'none';
+  document.getElementById('login-input').value = '';
+  document.getElementById('login-error').textContent = '';
+}
+
+function showLoginError(msg) {
+  document.getElementById('login-error').textContent = msg;
+  setTimeout(() => { document.getElementById('login-error').textContent = ''; }, 3000);
+}
+
+function toggleEye() {
+  const inp = document.getElementById('login-input');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+}
+
+// Change password
+function openChangePass() {
+  document.getElementById('cp-current').value = '';
+  document.getElementById('cp-new').value = '';
+  document.getElementById('cp-confirm').value = '';
+  document.getElementById('cp-error').textContent = '';
+  document.getElementById('change-pass-modal').classList.add('open');
+}
+
+function closeChangePass() {
+  document.getElementById('change-pass-modal').classList.remove('open');
+}
+
+async function doChangePass() {
+  const current = document.getElementById('cp-current').value;
+  const newPwd  = document.getElementById('cp-new').value;
+  const confirm = document.getElementById('cp-confirm').value;
+  const errEl   = document.getElementById('cp-error');
+
+  if (!current || !newPwd || !confirm) { errEl.textContent = 'Preencha todos os campos.'; return; }
+  if (newPwd !== confirm) { errEl.textContent = 'As senhas novas não coincidem.'; return; }
+  if (newPwd.length < 4) { errEl.textContent = 'A nova senha deve ter ao menos 4 caracteres.'; return; }
+
+  const currentHash = await sha256(current);
+  const stored = localStorage.getItem(HASH_KEY);
+  if (currentHash !== stored) { errEl.textContent = 'Senha atual incorreta.'; return; }
+
+  const newHash = await sha256(newPwd);
+  localStorage.setItem(HASH_KEY, newHash);
+  closeChangePass();
+  alert('Senha alterada com sucesso!');
+}
+
+// ── BOOT ──────────────────────────────────────────────────────────────────────
+(function() {
+  const hasHash = localStorage.getItem(HASH_KEY);
+  if (!hasHash) {
+    document.getElementById('first-time-hint').style.display = 'block';
+  }
+  // If session still active (same tab), skip login
+  if (sessionStorage.getItem(SESSION_KEY) === '1') {
+    grantAccess();
+  }
+})();
+</script>
+</body>
+</html>
