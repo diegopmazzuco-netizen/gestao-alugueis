@@ -440,6 +440,80 @@
   ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
   ::-webkit-scrollbar-thumb:hover { background: var(--gold-dim); }
 
+  /* PILL FILTER */
+  .filter-section { padding: 16px; border-bottom: 1px solid var(--border); }
+
+  .filter-section h3 {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+  }
+
+  .filter-group { margin-bottom: 14px; }
+
+  .filter-group-label {
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 7px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .filter-group-label button {
+    background: none;
+    border: none;
+    color: var(--text-dim);
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    padding: 0;
+    transition: color 0.15s;
+  }
+
+  .filter-group-label button:hover { color: var(--gold); }
+
+  .pill-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+
+  .pill {
+    padding: 4px 11px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-muted);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.15s;
+    user-select: none;
+    white-space: nowrap;
+  }
+
+  .pill:hover { border-color: var(--gold-dim); color: var(--text); }
+
+  .pill.active {
+    background: var(--gold-dim);
+    border-color: var(--gold);
+    color: var(--gold-light);
+  }
+
+  .filter-active-summary {
+    font-size: 10px;
+    color: var(--gold-dim);
+    margin-top: 10px;
+    min-height: 14px;
+    letter-spacing: 0.5px;
+  }
+
   @media (max-width: 768px) {
     .app { grid-template-columns: 1fr; height: auto; }
     .sidebar { height: auto; border-right: none; border-bottom: 1px solid var(--border); }
@@ -617,6 +691,63 @@
 <div class="app">
   <!-- SIDEBAR -->
   <aside class="sidebar">
+
+    <!-- CONTROLE RECEITA/DESPESA -->
+    <div class="sidebar-section">
+      <h3>Lançamentos M2L</h3>
+      <button class="btn" style="width:100%;padding:10px 0;font-size:12px;border-radius:8px;" onclick="openModal('income')">+ Adicionar</button>
+    </div>
+
+    <!-- FILTROS -->
+    <div class="filter-section">
+      <h3>Filtros</h3>
+
+      <div class="filter-group">
+        <div class="filter-group-label">Condomínios <button onclick="clearPills('condo')">Limpar</button></div>
+        <div class="pill-group" id="pills-condo">
+          <div class="pill all-pill" data-group="condo" data-value="all" onclick="toggleAllPill(this)">Todos</div>
+          <div class="pill" data-group="condo" data-value="241" onclick="togglePill(this)">241</div>
+          <div class="pill" data-group="condo" data-value="295" onclick="togglePill(this)">295</div>
+          <div class="pill" data-group="condo" data-value="715" onclick="togglePill(this)">715</div>
+          <div class="pill" data-group="condo" data-value="1244" onclick="togglePill(this)">1244</div>
+          <div class="pill" data-group="condo" data-value="1245" onclick="togglePill(this)">1245</div>
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <div class="filter-group-label">Meses <button onclick="clearPills('month')">Limpar</button></div>
+        <div class="pill-group" id="pills-month">
+          <div class="pill all-pill" data-group="month" data-value="all" onclick="toggleAllPill(this)">Todos</div>
+          <div class="pill" data-group="month" data-value="01" onclick="togglePill(this)">Jan</div>
+          <div class="pill" data-group="month" data-value="02" onclick="togglePill(this)">Fev</div>
+          <div class="pill" data-group="month" data-value="03" onclick="togglePill(this)">Mar</div>
+          <div class="pill" data-group="month" data-value="04" onclick="togglePill(this)">Abr</div>
+          <div class="pill" data-group="month" data-value="05" onclick="togglePill(this)">Mai</div>
+          <div class="pill" data-group="month" data-value="06" onclick="togglePill(this)">Jun</div>
+          <div class="pill" data-group="month" data-value="07" onclick="togglePill(this)">Jul</div>
+          <div class="pill" data-group="month" data-value="08" onclick="togglePill(this)">Ago</div>
+          <div class="pill" data-group="month" data-value="09" onclick="togglePill(this)">Set</div>
+          <div class="pill" data-group="month" data-value="10" onclick="togglePill(this)">Out</div>
+          <div class="pill" data-group="month" data-value="11" onclick="togglePill(this)">Nov</div>
+          <div class="pill" data-group="month" data-value="12" onclick="togglePill(this)">Dez</div>
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <div class="filter-group-label">Anos <button onclick="clearPills('year')">Limpar</button></div>
+        <div class="pill-group" id="pills-year">
+          <div class="pill all-pill" data-group="year" data-value="all" onclick="toggleAllPill(this)">Todos</div>
+          <div class="pill" data-group="year" data-value="2024" onclick="togglePill(this)">2024</div>
+          <div class="pill" data-group="year" data-value="2025" onclick="togglePill(this)">2025</div>
+          <div class="pill" data-group="year" data-value="2026" onclick="togglePill(this)">2026</div>
+          <div class="pill" data-group="year" data-value="2027" onclick="togglePill(this)">2027</div>
+        </div>
+      </div>
+
+      <div class="filter-active-summary" id="filter-summary"></div>
+    </div>
+
+    <!-- VISÃO GERAL -->
     <div class="sidebar-section">
       <h3>Visão Geral</h3>
       <div class="balance-card">
@@ -632,79 +763,11 @@
         <div class="value neg" id="sb-exp">R$ 0,00</div>
       </div>
     </div>
-    <div class="sidebar-section">
-      <h3>Condomínios</h3>
-      <button class="condo-btn active" data-condo="all" onclick="selectCondo('all')">
-        Todos os Condomínios <span class="apt-count" id="count-all">0</span>
-      </button>
-      <button class="condo-btn" data-condo="241" onclick="selectCondo('241')">
-        Cond. 241 <span class="apt-count">7 apts</span>
-      </button>
-      <button class="condo-btn" data-condo="715" onclick="selectCondo('715')">
-        Cond. 715 <span class="apt-count">9 apts</span>
-      </button>
-      <button class="condo-btn" data-condo="1244" onclick="selectCondo('1244')">
-        Cond. 1244 <span class="apt-count">15 apts</span>
-      </button>
-      <button class="condo-btn" data-condo="1245" onclick="selectCondo('1245')">
-        Cond. 1245 <span class="apt-count">13 apts</span>
-      </button>
-    </div>
-    <div class="sidebar-section">
-      <h3>Filtro de Período</h3>
-      <div class="field">
-        <label>Mês</label>
-        <select id="filter-month" onchange="renderAll()">
-          <option value="">Todos</option>
-          <option value="01">Janeiro</option><option value="02">Fevereiro</option>
-          <option value="03">Março</option><option value="04">Abril</option>
-          <option value="05">Maio</option><option value="06">Junho</option>
-          <option value="07">Julho</option><option value="08">Agosto</option>
-          <option value="09">Setembro</option><option value="10">Outubro</option>
-          <option value="11">Novembro</option><option value="12">Dezembro</option>
-        </select>
-      </div>
-      <div class="field">
-        <label>Ano</label>
-        <select id="filter-year" onchange="renderAll()">
-          <option value="">Todos</option>
-          <option value="2024">2024</option>
-          <option value="2025">2025</option>
-          <option value="2026" selected>2026</option>
-          <option value="2027">2027</option>
-        </select>
-      </div>
-    </div>
+
   </aside>
 
   <!-- MAIN CONTENT -->
   <main class="main" id="main-content">
-    <div class="main-header">
-      <div>
-        <h2 id="main-title">Todos os Condomínios</h2>
-        <div class="sub" id="main-sub">Visão consolidada</div>
-      </div>
-      <div style="display:flex;gap:10px;">
-        <button class="btn-sec" onclick="openModal('expense')">+ Despesa</button>
-        <button class="btn" onclick="openModal('income')">+ Receita</button>
-      </div>
-    </div>
-
-    <!-- SUMMARY -->
-    <div class="summary-grid">
-      <div class="sum-card">
-        <div class="lbl">Receitas</div>
-        <div class="val green" id="card-rec">R$ 0,00</div>
-      </div>
-      <div class="sum-card">
-        <div class="lbl">Despesas</div>
-        <div class="val red" id="card-exp">R$ 0,00</div>
-      </div>
-      <div class="sum-card">
-        <div class="lbl">Saldo</div>
-        <div class="val gold" id="card-bal">R$ 0,00</div>
-      </div>
-    </div>
 
     <!-- APT OVERVIEW -->
     <div id="apt-section">
@@ -728,6 +791,12 @@
         <option value="luz">Luz</option>
         <option value="internet">Internet</option>
         <option value="iptu">IPTU</option>
+        <option value="salario">Salário</option>
+        <option value="das_hm">DAS HM</option>
+        <option value="imposto_m2l">Imposto M2L</option>
+        <option value="manutencao">Manutenção</option>
+        <option value="cartao_c6hm">Cartão C6 HM</option>
+        <option value="cartao_c6m2l">Cartão C6 M2L</option>
         <option value="outro">Outro</option>
       </select>
     </div>
@@ -740,7 +809,7 @@
             <th>Condomínio</th>
             <th>Apartamento</th>
             <th>Categoria</th>
-            <th>Descrição</th>
+            <th>Inquilino / Descrição</th>
             <th>Tipo</th>
             <th>Valor</th>
             <th></th>
@@ -768,35 +837,56 @@
       <label>Condomínio</label>
       <select id="m-condo" onchange="updateAptList()">
         <option value="">Selecione...</option>
-        <option value="241">Condomínio 241</option>
-        <option value="715">Condomínio 715</option>
-        <option value="1244">Condomínio 1244</option>
-        <option value="1245">Condomínio 1245</option>
+        <option value="geral">Geral</option>
+        <option value="241">241</option>
+        <option value="295">295</option>
+        <option value="715">715</option>
+        <option value="1244">1244</option>
+        <option value="1245">1245</option>
       </select>
     </div>
 
     <div class="field" id="apt-field">
-      <label>Apartamento <span style="color:var(--text-dim)">(opcional para despesas fixas)</span></label>
-      <select id="m-apt">
+      <label>Apartamento</label>
+      <select id="m-apt" onchange="updateInquilinoField()">
         <option value="">— Selecione o condomínio primeiro —</option>
       </select>
     </div>
 
-    <div class="field">
+    <div class="field" id="cat-field">
       <label>Categoria</label>
-      <select id="m-cat" onchange="updateCatHint()">
+      <select id="m-cat">
         <option value="aluguel">Aluguel</option>
-        <option value="agua">Água (Despesa Fixa)</option>
-        <option value="luz">Luz (Despesa Fixa)</option>
-        <option value="internet">Internet (Despesa Fixa)</option>
-        <option value="iptu">IPTU (Despesa Anual)</option>
+        <option value="agua">Água</option>
+        <option value="luz">Luz</option>
+        <option value="internet">Internet</option>
+        <option value="iptu">IPTU</option>
         <option value="outro">Outro</option>
       </select>
     </div>
 
-    <div class="field">
+    <div class="field" id="inquilino-field" style="display:none">
+      <label>Inquilino</label>
+      <select id="m-inquilino" onchange="showInquilinoInfo()">
+        <option value="">— Selecione o condomínio e apt primeiro —</option>
+      </select>
+      <div id="inquilino-info" style="margin-top:8px;padding:8px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;font-size:11px;color:var(--text-muted);display:none;">
+      </div>
+    </div>
+
+    <div class="field" id="pagamento-field">
+      <label>Forma de Pagamento</label>
+      <select id="m-desc">
+        <option value="">Selecione...</option>
+        <option value="Dinheiro">Dinheiro</option>
+        <option value="C6 M2L">C6 M2L</option>
+        <option value="C6 HM">C6 HM</option>
+      </select>
+    </div>
+
+    <div class="field" id="manutencao-desc-field" style="display:none">
       <label>Descrição</label>
-      <input type="text" id="m-desc" placeholder="Ex: Aluguel apt 12 - mai/2026">
+      <input type="text" id="m-manutencao-desc" placeholder="Descreva o que foi comprado">
     </div>
 
     <div class="field">
@@ -806,7 +896,7 @@
 
     <div class="field">
       <label>Data</label>
-      <input type="date" id="m-date">
+      <input type="date" id="m-date" readonly style="background:var(--surface);color:var(--text-muted);cursor:not-allowed;opacity:0.7;">
     </div>
 
     <div class="field">
@@ -827,10 +917,56 @@ const CONDOS = {
   '241':  { name: 'Cond. 241',  apts: Array.from({length:7},(_,i)=>(i+12).toString()) },
   '715':  { name: 'Cond. 715',  apts: Array.from({length:9},(_,i)=>(i+1).toString()) },
   '1244': { name: 'Cond. 1244', apts: Array.from({length:15},(_,i)=>(i+1).toString()) },
-  '1245': { name: 'Cond. 1245', apts: [...Array.from({length:11},(_,i)=>(i+1).toString()),'35','85'] }
+  '1245': { name: 'Cond. 1245', apts: [...Array.from({length:11},(_,i)=>(i+1).toString()),'35','85'] },
+  '295':  { name: 'Cond. 295',  apts: Array.from({length:7},(_,i)=>(i+1).toString()) }
 };
 
-let entries = JSON.parse(localStorage.getItem('rental_entries') || '[]');
+// ── INQUILINOS (Ativos) ───────────────────────────────────────────────────────
+const INQUILINOS = [
+  {condo:'1245',apt:'1',nome:'Edicson Enrique Prado Freites',cpf:'110.118.602-01',valor:1000},
+  {condo:'1245',apt:'2',nome:'Ediliana De Los Angeles Pena Freites',cpf:'118.406.082-77',valor:1000},
+  {condo:'1245',apt:'3',nome:'Valmor Martins',cpf:'538.520.449-87',valor:1000},
+  {condo:'1245',apt:'35',nome:'Huller Diniz Pereira',cpf:'081.575.953-39',valor:1000},
+  {condo:'1245',apt:'4',nome:'Anibal Hernandez Alarcon',cpf:'B549864-9',valor:1000},
+  {condo:'1245',apt:'5',nome:'Gabriel Gasparini',cpf:'046.267.510-67',valor:1000},
+  {condo:'1245',apt:'6',nome:'Julian Gustavo Trindade de Lima',cpf:'035.193.890-70',valor:1000},
+  {condo:'1245',apt:'7',nome:'Arthur Figueiredo Costa',cpf:'098.243.104-01',valor:1000},
+  {condo:'1245',apt:'8',nome:'Joceli dos Santos',cpf:'770.846.597-49',valor:1000},
+  {condo:'1245',apt:'9',nome:'Derb Iconio Barbosa Nascimento',cpf:'776.896.902-20',valor:800},
+  {condo:'1245',apt:'10',nome:'Jeovar Gedeon',cpf:'801.542.169-17',valor:1000},
+  {condo:'1245',apt:'11',nome:'Laurese Gedeon',cpf:'800.271.299-42',valor:850},
+  {condo:'1245',apt:'85',nome:'Adriana Silvério Fortes',cpf:'740.563.369-20',valor:1000},
+  {condo:'1244',apt:'1',nome:'Edvanilton Rocha Moreira Silva',cpf:'700.523.682-38',valor:750},
+  {condo:'1244',apt:'2',nome:'Kathleen Nogarett da Rosa',cpf:'120.821.499-35',valor:1000},
+  {condo:'1244',apt:'3',nome:'Vanusa Campos de Souza',cpf:'082.878.382-90',valor:900},
+  {condo:'1244',apt:'4',nome:'Tiago da Cruz',cpf:'083.095.649-29',valor:900},
+  {condo:'1244',apt:'5',nome:'Wellington Cezar Viana',cpf:'002.068.842-30',valor:1000},
+  {condo:'1244',apt:'6',nome:'Caroline da Silva Alves',cpf:'036.322.930-32',valor:1000},
+  {condo:'1244',apt:'7',nome:'André Jonas dos Santos',cpf:'164.928.694-51',valor:1000},
+  {condo:'1244',apt:'8',nome:'Giulian Castro Flores',cpf:'081.843.149-06',valor:950},
+  {condo:'1244',apt:'9',nome:'Gustavo Morona Teixeira',cpf:'113.572.919-06',valor:1000},
+  {condo:'1244',apt:'10',nome:'Henrique Vicente Braga',cpf:'114.135.899-95',valor:950},
+  {condo:'1244',apt:'11',nome:'Icaro Matheus Santos Souza',cpf:'050.082.725-78',valor:1000},
+  {condo:'1244',apt:'12',nome:'Maria Clara Bourscheid De Carvalho Rego',cpf:'414.211.128-09',valor:1000},
+  {condo:'1244',apt:'13',nome:'Lucas José Muchenski Fernandes',cpf:'121.426.439-57',valor:1000},
+  {condo:'1244',apt:'14',nome:'Diego Marques Conceição',cpf:'038.750.290-46',valor:950},
+  {condo:'1244',apt:'15',nome:'Saintiar Gourdet',cpf:'123.342.869-15',valor:1000},
+  {condo:'715',apt:'1',nome:'Waldir Candido da Silva',cpf:'618.257.279-53',valor:950},
+  {condo:'715',apt:'2',nome:'João Aleixo Cipriani',cpf:'634.828.199-04',valor:1000},
+  {condo:'715',apt:'3',nome:'Carlos Eduardo Gomes Kreceski',cpf:'150.099.899-05',valor:1000},
+  {condo:'715',apt:'4',nome:'Maria Eduarda Pereira Damazio',cpf:'152.161.979-40',valor:1000},
+  {condo:'715',apt:'5',nome:'Cristiane Vieira Machado',cpf:'107.442.989-38',valor:1000},
+  {condo:'715',apt:'6',nome:'Felipe Zan Coelho',cpf:'021.741.786-80',valor:1000},
+  {condo:'715',apt:'7',nome:'Eduarda Barbosa Gabriel',cpf:'865.645.790-04',valor:900},
+  {condo:'715',apt:'8',nome:'Leandro Alves Sorato',cpf:'147.666.189-80',valor:1000},
+  {condo:'715',apt:'9',nome:'Wilson Soares Silva',cpf:'755.163.499-15',valor:1000},
+  {condo:'241',apt:'13',nome:'Osvaldo Demetrio',cpf:'538.476.449-04',valor:700},
+  {condo:'241',apt:'14',nome:'Lara Sabrina da Conceição Gonçalves',cpf:'623.401.673-10',valor:1000},
+  {condo:'241',apt:'15',nome:'Gabriel Ferreira Chaga',cpf:'875.190.540-04',valor:1000},
+  {condo:'241',apt:'16',nome:'Jeferson Nunes dos Santos',cpf:'076.854.805-57',valor:1000},
+  {condo:'241',apt:'17',nome:'Pedro Henrique de Souza Ribeiro',cpf:'028.566.070-55',valor:800},
+  {condo:'241',apt:'18',nome:'Évellyn Mendes da Silva',cpf:'138.490.969-98',valor:950},
+];
 let currentCondo = 'all';
 let modalType = 'income';
 let editId = null;
@@ -847,22 +983,95 @@ function fmtSigned(v) {
   return s + ' ' + fmt(v);
 }
 
-function getFiltered() {
-  const month = document.getElementById('filter-month').value;
-  const year  = document.getElementById('filter-year').value;
-  const fType = document.getElementById('f-type').value;
-  const fCat  = document.getElementById('f-cat').value;
+// ── PILL FILTERS ──────────────────────────────────────────────────────────────
+function getChecked(group) {
+  const allPill = document.querySelector(`.pill.all-pill[data-group="${group}"]`);
+  if (allPill && allPill.classList.contains('active')) return [];
+  const active = Array.from(document.querySelectorAll(`.pill[data-group="${group}"]:not(.all-pill).active`)).map(p => p.dataset.value);
+  return active;
+}
 
+function hasAnyActive(group) {
+  return document.querySelectorAll(`.pill[data-group="${group}"].active`).length > 0;
+}
+
+function toggleAllPill(el) {
+  const group = el.dataset.group;
+  const specific = document.querySelectorAll(`.pill[data-group="${group}"]:not(.all-pill)`);
+  const isActive = el.classList.contains('active');
+  if (isActive) {
+    el.classList.remove('active');
+    specific.forEach(p => p.classList.remove('active'));
+  } else {
+    el.classList.add('active');
+    specific.forEach(p => p.classList.add('active'));
+  }
+  updateFilterSummary();
+  renderAll();
+}
+
+function togglePill(el) {
+  const group = el.dataset.group;
+  const allPill = document.querySelector(`.pill.all-pill[data-group="${group}"]`);
+  const specific = document.querySelectorAll(`.pill[data-group="${group}"]:not(.all-pill)`);
+  el.classList.toggle('active');
+  const totalActive = document.querySelectorAll(`.pill[data-group="${group}"]:not(.all-pill).active`).length;
+  if (allPill) {
+    allPill.classList.toggle('active', totalActive === specific.length);
+  }
+  updateFilterSummary();
+  renderAll();
+}
+
+function clearPills(group) {
+  document.querySelectorAll(`.pill[data-group="${group}"]`).forEach(p => p.classList.remove('active'));
+  updateFilterSummary();
+  renderAll();
+}
+
+function updateFilterSummary() {
+  const condos = getChecked('condo');
+  const months = getChecked('month');
+  const years  = getChecked('year');
+  const parts  = [];
+  if (condos.length) parts.push(condos.map(c => 'Cond.'+c).join(', '));
+  const mNames = {'01':'Jan','02':'Fev','03':'Mar','04':'Abr','05':'Mai','06':'Jun','07':'Jul','08':'Ago','09':'Set','10':'Out','11':'Nov','12':'Dez'};
+  if (months.length) parts.push(months.map(m => mNames[m]).join(', '));
+  if (years.length)  parts.push(years.join(', '));
+  const el = document.getElementById('filter-summary');
+  el.textContent = parts.length ? '↳ ' + parts.join(' · ') : '';
+}
+
+function noneSelected() {
+  return !hasAnyActive('condo') && !hasAnyActive('month') && !hasAnyActive('year');
+}
+
+function getFiltered() {
+  if (noneSelected()) return [];
+  const condos = getChecked('condo');
+  const months = getChecked('month');
+  const years  = getChecked('year');
+  const fType  = document.getElementById('f-type').value;
+  const fCat   = document.getElementById('f-cat').value;
   return entries.filter(e => {
-    if (currentCondo !== 'all' && e.condo !== currentCondo) return false;
-    if (month && e.date && !e.date.startsWith(`${year || ''}`)) {}
-    if (year  && e.date && !e.date.startsWith(year)) return false;
-    if (month && e.date) {
-      const m = e.date.split('-')[1];
-      if (m !== month) return false;
-    }
+    if (condos.length  && !condos.includes(e.condo)) return false;
+    if (years.length   && e.date && !years.includes(e.date.split('-')[0])) return false;
+    if (months.length  && e.date && !months.includes(e.date.split('-')[1])) return false;
     if (fType && e.type !== fType) return false;
     if (fCat  && e.cat  !== fCat)  return false;
+    return true;
+  });
+}
+
+function getSidebarFiltered() {
+  if (noneSelected()) return [];
+  const condos = getChecked('condo');
+  const months = getChecked('month');
+  const years  = getChecked('year');
+  return entries.filter(e => {
+    if (condos.length  && !condos.includes(e.condo)) return false;
+    if (years.length   && e.date && !years.includes(e.date.split('-')[0])) return false;
+    if (months.length  && e.date && !months.includes(e.date.split('-')[1])) return false;
     return true;
   });
 }
@@ -870,37 +1079,17 @@ function getFiltered() {
 // ── CONDO SELECT ──────────────────────────────────────────────────────────────
 function selectCondo(c) {
   currentCondo = c;
-  document.querySelectorAll('.condo-btn').forEach(b => b.classList.toggle('active', b.dataset.condo === c));
-  document.getElementById('main-title').textContent = c === 'all' ? 'Todos os Condomínios' : `Condomínio ${c}`;
-  document.getElementById('main-sub').textContent   = c === 'all' ? 'Visão consolidada' : CONDOS[c]?.apts.length + ' apartamentos';
-  document.getElementById('apt-section').style.display = c === 'all' ? 'none' : 'block';
+  const aptSec = document.getElementById('apt-section');
+  if (aptSec) aptSec.style.display = c === 'all' ? 'none' : 'block';
   renderAll();
 }
 
 // ── RENDER ────────────────────────────────────────────────────────────────────
 function renderAll() {
-  const filtered = getFiltered();
-  const allFiltered = (() => {
-    const month = document.getElementById('filter-month').value;
-    const year  = document.getElementById('filter-year').value;
-    return entries.filter(e => {
-      if (year  && e.date && !e.date.startsWith(year)) return false;
-      if (month && e.date) { if (e.date.split('-')[1] !== month) return false; }
-      return true;
-    });
-  })();
+  const filtered    = getFiltered();
+  const allFiltered = getSidebarFiltered();
 
-  // Summary cards (current view)
-  const rec = filtered.filter(e => e.type === 'income').reduce((s,e) => s+e.val, 0);
-  const exp = filtered.filter(e => e.type === 'expense').reduce((s,e) => s+e.val, 0);
-  document.getElementById('card-rec').textContent = fmt(rec);
-  document.getElementById('card-exp').textContent = fmt(exp);
-  const bal = rec - exp;
-  const balEl = document.getElementById('card-bal');
-  balEl.textContent = fmt(bal);
-  balEl.className = 'val ' + (bal >= 0 ? 'green' : 'red');
-
-  // Sidebar totals (all condos)
+  // Sidebar totals
   const allRec = allFiltered.filter(e => e.type === 'income').reduce((s,e) => s+e.val, 0);
   const allExp = allFiltered.filter(e => e.type === 'expense').reduce((s,e) => s+e.val, 0);
   const allBal = allRec - allExp;
@@ -909,13 +1098,10 @@ function renderAll() {
   document.getElementById('sb-total').textContent = fmt(allBal);
   document.getElementById('sb-total').className = 'value ' + (allBal >= 0 ? 'gold' : 'neg');
 
-  // Count badge
-  document.getElementById('count-all').textContent = allFiltered.length;
-
   // Apt grid
   if (currentCondo !== 'all') {
     const grid = document.getElementById('apt-grid');
-    const apts = CONDOS[currentCondo].apts;
+    const apts = CONDOS[currentCondo]?.apts || [];
     grid.innerHTML = apts.map(apt => {
       const aptEntries = filtered.filter(e => e.apt === apt);
       const hasInc = aptEntries.some(e => e.type === 'income');
@@ -934,17 +1120,16 @@ function renderAll() {
 
   const sorted = [...filtered].sort((a,b) => (b.date||'').localeCompare(a.date||''));
   tbody.innerHTML = sorted.map(e => {
-    const catLabels = {aluguel:'Aluguel',agua:'Água',luz:'Luz',internet:'Internet',iptu:'IPTU',outro:'Outro'};
-    const catTag = e.cat === 'iptu' ? 'anual' : (e.cat === 'aluguel' ? '' : 'fix');
+    const catLabels = {aluguel:'Aluguel',agua:'Água',luz:'Luz',internet:'Internet',iptu:'IPTU',outro:'Outro',salario:'Salário',das_hm:'DAS HM',imposto_m2l:'Imposto M2L',manutencao:'Manutenção',cartao_c6hm:'Cartão C6 HM',cartao_c6m2l:'Cartão C6 M2L'};
     const catCls = e.cat === 'iptu' ? 'tag-anual' : (e.cat === 'aluguel' ? 'tag-rec' : 'tag-fix');
-    const condoName = CONDOS[e.condo]?.name || e.condo;
+    const condoName = e.condo === 'geral' ? 'Geral' : (CONDOS[e.condo]?.name || e.condo);
     const dateStr = e.date ? new Date(e.date+'T12:00:00').toLocaleDateString('pt-BR') : '—';
     return `<tr>
       <td>${dateStr}</td>
       <td>${condoName}</td>
       <td>${e.apt ? 'Apt '+e.apt : '<span style="color:var(--text-dim)">—</span>'}</td>
       <td><span class="tag ${catCls}">${catLabels[e.cat]||e.cat}</span></td>
-      <td>${e.desc||'—'} ${e.obs ? '<span style="color:var(--text-dim);font-size:11px">· '+e.obs+'</span>' : ''}</td>
+      <td>${e.inquilino || e.manutDesc || e.desc || '—'}</td>
       <td><span class="tag ${e.type==='income'?'tag-rec':'tag-exp'}">${e.type==='income'?'Receita':'Despesa'}</span></td>
       <td class="${e.type==='income'?'amount-pos':'amount-neg'}">${e.type==='income'?'+':'-'} ${fmt(e.val)}</td>
       <td><button class="btn-danger" onclick="deleteEntry('${e.id}')">✕</button></td>
@@ -952,10 +1137,7 @@ function renderAll() {
   }).join('');
 }
 
-function filterApt(apt) {
-  // Quick highlight — for now just scroll to table filter
-  renderAll();
-}
+function filterApt(apt) { renderAll(); }
 
 // ── MODAL ─────────────────────────────────────────────────────────────────────
 function openModal(type) {
@@ -963,20 +1145,43 @@ function openModal(type) {
   document.getElementById('modal-title').textContent = type === 'income' ? 'Nova Receita' : 'Nova Despesa';
   document.getElementById('modal-bg').classList.add('open');
   setType(type);
-  // default date today
-  const today = new Date().toISOString().split('T')[0];
+  const now = new Date();
+  const today = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
   document.getElementById('m-date').value = today;
   document.getElementById('m-val').value = '';
-  document.getElementById('m-desc').value = '';
   document.getElementById('m-obs').value = '';
   document.getElementById('m-apt').value = '';
-  // pre-select current condo
-  if (currentCondo !== 'all') {
-    document.getElementById('m-condo').value = currentCondo;
-    updateAptList();
+  document.getElementById('m-desc').value = '';
+  document.getElementById('apt-field').style.display = 'block';
+  document.getElementById('inquilino-info').style.display = 'none';
+  document.getElementById('manutencao-desc-field').style.display = 'none';
+  document.getElementById('m-manutencao-desc').value = '';
+  updateCondoOptions();
+  document.getElementById('m-condo').value = '';
+  document.getElementById('m-apt').innerHTML = '<option value="">— Selecione o condomínio primeiro —</option>';
+  updateCatOptions();
+  updateInquilinoField();
+}
+
+function updateCondoOptions() {
+  const sel = document.getElementById('m-condo');
+  if (modalType === 'income') {
+    sel.innerHTML = `
+      <option value="">Selecione...</option>
+      <option value="241">241</option>
+      <option value="295">295</option>
+      <option value="715">715</option>
+      <option value="1244">1244</option>
+      <option value="1245">1245</option>`;
   } else {
-    document.getElementById('m-condo').value = '';
-    document.getElementById('m-apt').innerHTML = '<option value="">— Selecione o condomínio primeiro —</option>';
+    sel.innerHTML = `
+      <option value="">Selecione...</option>
+      <option value="geral">Geral (todos os condomínios)</option>
+      <option value="241">241</option>
+      <option value="295">295</option>
+      <option value="715">715</option>
+      <option value="1244">1244</option>
+      <option value="1245">1245</option>`;
   }
 }
 
@@ -987,10 +1192,12 @@ function setType(t) {
   modalType = t;
   document.getElementById('tog-income').className  = 'type-opt ' + (t==='income'  ? 'sel-rec' : '');
   document.getElementById('tog-expense').className = 'type-opt ' + (t==='expense' ? 'sel-exp' : '');
-  // auto-set category
-  if (t === 'income') {
-    document.getElementById('m-cat').value = 'aluguel';
-  }
+  updateCondoOptions();
+  document.getElementById('m-condo').value = '';
+  document.getElementById('m-apt').innerHTML = '<option value="">— Selecione o condomínio primeiro —</option>';
+  document.getElementById('apt-field').style.display = 'block';
+  updateCatOptions();
+  updateInquilinoField();
 }
 
 function updateCatHint() {}
@@ -998,23 +1205,134 @@ function updateCatHint() {}
 function updateAptList() {
   const condo = document.getElementById('m-condo').value;
   const sel = document.getElementById('m-apt');
-  if (!condo) {
-    sel.innerHTML = '<option value="">— Selecione o condomínio primeiro —</option>';
+  const aptField = document.getElementById('apt-field');
+
+  if (!condo || condo === 'geral') {
+    sel.innerHTML = '<option value="">— Não se aplica —</option>';
+    aptField.style.display = condo === 'geral' ? 'none' : 'block';
+  } else {
+    aptField.style.display = 'block';
+    const apts = CONDOS[condo].apts;
+    if (modalType === 'income') {
+      sel.innerHTML = '<option value="">Selecione o apartamento...</option>' +
+        apts.map(a => `<option value="${a}">Apt ${a}</option>`).join('');
+    } else {
+      sel.innerHTML = '<option value="">Geral (sem apt específico)</option>' +
+        apts.map(a => `<option value="${a}">Apt ${a}</option>`).join('');
+    }
+  }
+  updateCatOptions();
+  updateInquilinoField();
+}
+
+function updateInquilinoField() {
+  const catField = document.getElementById('cat-field');
+  const inqField = document.getElementById('inquilino-field');
+  const inqSel   = document.getElementById('m-inquilino');
+  const inqInfo  = document.getElementById('inquilino-info');
+
+  if (modalType !== 'income') {
+    catField.style.display = 'block';
+    inqField.style.display = 'none';
     return;
   }
-  const apts = CONDOS[condo].apts;
-  sel.innerHTML = '<option value="">Geral (sem apt específico)</option>' +
-    apts.map(a => `<option value="${a}">Apt ${a}</option>`).join('');
+
+  catField.style.display = 'none';
+  inqField.style.display = 'block';
+
+  const condo = document.getElementById('m-condo').value;
+  const apt   = document.getElementById('m-apt').value;
+
+  if (!condo || !apt) {
+    inqSel.innerHTML = '<option value="">— Selecione o condomínio e apt primeiro —</option>';
+    inqInfo.style.display = 'none';
+    return;
+  }
+
+  const match = INQUILINOS.find(i => i.condo === condo && i.apt === apt);
+  if (match) {
+    inqSel.innerHTML = `<option value="${match.nome}">${match.nome}</option>`;
+    inqInfo.style.display = 'block';
+    inqInfo.innerHTML = `<span style="color:var(--text-muted)">CPF:</span> <span style="color:var(--text)">${match.cpf}</span>`;
+    document.getElementById('m-val').value = match.valor;
+  } else {
+    inqSel.innerHTML = '<option value="">Sem inquilino cadastrado</option>';
+    inqInfo.style.display = 'none';
+    document.getElementById('m-val').value = '';
+  }
+}
+
+function showInquilinoInfo() {
+  updateInquilinoField();
+}
+function updateCatOptions() {
+  const condo = document.getElementById('m-condo').value;
+  const cat   = document.getElementById('m-cat');
+  let opts = '';
+
+  if (modalType === 'income') {
+    opts = `
+      <option value="aluguel">Aluguel</option>
+      <option value="outro">Outro</option>`;
+  } else if (condo === 'geral') {
+    opts = `
+      <option value="salario">Salário</option>
+      <option value="das_hm">DAS HM</option>
+      <option value="imposto_m2l">Imposto M2L</option>
+      <option value="manutencao">Manutenção</option>
+      <option value="cartao_c6hm">Cartão de Crédito C6 HM</option>
+      <option value="cartao_c6m2l">Cartão de Crédito C6 M2L</option>
+      <option value="outro">Outro</option>`;
+  } else {
+    opts = `
+      <option value="agua">Água</option>
+      <option value="luz">Luz</option>
+      <option value="internet">Internet</option>
+      <option value="iptu">IPTU</option>
+      <option value="manutencao">Manutenção</option>
+      <option value="outro">Outro</option>`;
+  }
+  cat.innerHTML = opts;
+  cat.onchange = updatePagamentoOptions;
+  updatePagamentoOptions();
+}
+
+function updatePagamentoOptions() {
+  const cat        = document.getElementById('m-cat').value;
+  const pagSel     = document.getElementById('m-desc');
+  const manutField = document.getElementById('manutencao-desc-field');
+  const manutInput = document.getElementById('m-manutencao-desc');
+
+  if (cat === 'manutencao') {
+    pagSel.innerHTML = `
+      <option value="">Selecione...</option>
+      <option value="Dinheiro">Dinheiro</option>
+      <option value="Cartão HM">Cartão HM</option>
+      <option value="Cartão M2L">Cartão M2L</option>`;
+    manutField.style.display = 'block';
+    if (!manutInput.value) manutInput.placeholder = 'Descreva o que foi comprado';
+  } else {
+    pagSel.innerHTML = `
+      <option value="">Selecione...</option>
+      <option value="Dinheiro">Dinheiro</option>
+      <option value="C6 M2L">C6 M2L</option>
+      <option value="C6 HM">C6 HM</option>`;
+    manutField.style.display = 'none';
+    manutInput.value = '';
+  }
+  pagSel.value = '';
 }
 
 function saveEntry() {
   const condo = document.getElementById('m-condo').value;
   const apt   = document.getElementById('m-apt').value;
-  const cat   = document.getElementById('m-cat').value;
   const desc  = document.getElementById('m-desc').value.trim();
   const val   = parseFloat(document.getElementById('m-val').value);
   const date  = document.getElementById('m-date').value;
   const obs   = document.getElementById('m-obs').value.trim();
+  const inquilino = modalType === 'income' ? (document.getElementById('m-inquilino')?.value || '') : '';
+  const cat = modalType === 'income' ? 'aluguel' : document.getElementById('m-cat').value;
+  const manutDesc = cat === 'manutencao' ? (document.getElementById('m-manutencao-desc').value.trim()) : '';
 
   if (!condo) { alert('Selecione o condomínio.'); return; }
   if (!val || val <= 0) { alert('Informe um valor válido.'); return; }
@@ -1022,7 +1340,11 @@ function saveEntry() {
   const entry = {
     id: Date.now().toString(),
     type: modalType,
-    condo, apt, cat, desc, val, date, obs
+    condo: condo === 'geral' ? 'geral' : condo,
+    apt, cat, desc, val, date,
+    obs: inquilino || manutDesc || obs,
+    inquilino,
+    manutDesc
   };
 
   entries.push(entry);
@@ -1041,7 +1363,7 @@ function deleteEntry(id) {
 }
 
 // ── GOOGLE SHEETS INTEGRATION (Apps Script Webhook) ───────────────────────────
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyyZ1pMBPt42-ANJ0xYr_7B4VzIc29eBJFTeGUTFcnV8l9JdqGelro0Z5LbWXY_Nebd/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyMioN_Wp8DNPkalaebPZApW8tEoByIUbNH67EKRVvCTkmVLy6YV1IV9bwpSEW04ivI/exec';
 
 function sheetsSetStatus(state) {
   const dot   = document.getElementById('sheets-dot');
@@ -1061,13 +1383,12 @@ function sheetsSetStatus(state) {
 async function sheetsPost(payload) {
   sheetsSetStatus('syncing');
   try {
-    const res = await fetch(APPS_SCRIPT_URL, {
+    await fetch(APPS_SCRIPT_URL, {
       method: 'POST',
       mode: 'no-cors',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
     });
-    // no-cors means we can't read the response, but if no exception it worked
     sheetsSetStatus('connected');
   } catch(e) {
     console.error('Sheets sync error:', e);
@@ -1075,17 +1396,13 @@ async function sheetsPost(payload) {
   }
 }
 
-async function sheetsAppendRow(entry) {
-  await sheetsPost({ action: 'append', entry });
-}
-
-async function sheetsDeleteRow(id) {
-  await sheetsPost({ action: 'delete', id });
-}
+async function sheetsAppendRow(entry) { await sheetsPost({ action: 'append', entry }); }
+async function sheetsDeleteRow(id)    { await sheetsPost({ action: 'delete', id }); }
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
 selectCondo('all');
 renderAll();
+updateFilterSummary();
 sheetsSetStatus('connected');
 </script>
 
