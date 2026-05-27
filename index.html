@@ -1324,34 +1324,40 @@ function updatePagamentoOptions() {
 }
 
 function saveEntry() {
-  const condo    = document.getElementById('m-condo').value;
-  const apt      = document.getElementById('m-apt').value;
-  const desc     = document.getElementById('m-desc').value; // forma de pagamento (select)
-  const val      = parseFloat(document.getElementById('m-val').value);
-  const date     = document.getElementById('m-date').value;
-  const obs      = (document.getElementById('m-obs')?.value || '').trim();
-  const inquilino  = modalType === 'income' ? (document.getElementById('m-inquilino')?.value || '') : '';
-  const cat        = modalType === 'income' ? 'aluguel' : document.getElementById('m-cat').value;
-  const manutDesc  = cat === 'manutencao' ? (document.getElementById('m-manutencao-desc')?.value.trim() || '') : '';
+  try {
+    const condo    = document.getElementById('m-condo').value;
+    const apt      = document.getElementById('m-apt').value;
+    const desc     = document.getElementById('m-desc').value;
+    const valRaw   = document.getElementById('m-val').value;
+    const val      = parseFloat(valRaw);
+    const date     = document.getElementById('m-date').value;
+    const obs      = (document.getElementById('m-obs')?.value || '').trim();
+    const inquilino  = modalType === 'income' ? (document.getElementById('m-inquilino')?.value || '') : '';
+    const cat        = modalType === 'income' ? 'aluguel' : (document.getElementById('m-cat')?.value || 'outro');
+    const manutDesc  = cat === 'manutencao' ? (document.getElementById('m-manutencao-desc')?.value.trim() || '') : '';
 
-  if (!condo) { alert('Selecione o condomínio.'); return; }
-  if (!val || val <= 0) { alert('Informe um valor válido.'); return; }
+    if (!condo) { alert('Selecione o condomínio.'); return; }
+    if (!valRaw || isNaN(val) || val <= 0) { alert('Informe um valor válido.'); return; }
 
-  const entry = {
-    id: Date.now().toString(),
-    type: modalType,
-    condo: condo === 'geral' ? 'geral' : condo,
-    apt, cat, desc, val, date,
-    obs: inquilino || manutDesc || obs,
-    inquilino,
-    manutDesc
-  };
+    const entry = {
+      id: Date.now().toString(),
+      type: modalType,
+      condo,
+      apt, cat, desc, val, date,
+      obs: inquilino || manutDesc || obs,
+      inquilino,
+      manutDesc
+    };
 
-  entries.push(entry);
-  save();
-  closeModal();
-  renderAll();
-  sheetsAppendRow(entry);
+    entries.push(entry);
+    save();
+    closeModal();
+    renderAll();
+    sheetsAppendRow(entry);
+  } catch(err) {
+    alert('Erro ao salvar: ' + err.message);
+    console.error(err);
+  }
 }
 
 function deleteEntry(id) {
