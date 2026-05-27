@@ -967,6 +967,8 @@ const INQUILINOS = [
   {condo:'241',apt:'17',nome:'Pedro Henrique de Souza Ribeiro',cpf:'028.566.070-55',valor:800},
   {condo:'241',apt:'18',nome:'Évellyn Mendes da Silva',cpf:'138.490.969-98',valor:950},
 ];
+
+let entries = JSON.parse(localStorage.getItem('rental_entries') || '[]');
 let currentCondo = 'all';
 let modalType = 'income';
 let editId = null;
