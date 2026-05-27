@@ -1324,15 +1324,15 @@ function updatePagamentoOptions() {
 }
 
 function saveEntry() {
-  const condo = document.getElementById('m-condo').value;
-  const apt   = document.getElementById('m-apt').value;
-  const desc  = document.getElementById('m-desc').value.trim();
-  const val   = parseFloat(document.getElementById('m-val').value);
-  const date  = document.getElementById('m-date').value;
-  const obs   = document.getElementById('m-obs').value.trim();
-  const inquilino = modalType === 'income' ? (document.getElementById('m-inquilino')?.value || '') : '';
-  const cat = modalType === 'income' ? 'aluguel' : document.getElementById('m-cat').value;
-  const manutDesc = cat === 'manutencao' ? (document.getElementById('m-manutencao-desc').value.trim()) : '';
+  const condo    = document.getElementById('m-condo').value;
+  const apt      = document.getElementById('m-apt').value;
+  const desc     = document.getElementById('m-desc').value; // forma de pagamento (select)
+  const val      = parseFloat(document.getElementById('m-val').value);
+  const date     = document.getElementById('m-date').value;
+  const obs      = (document.getElementById('m-obs')?.value || '').trim();
+  const inquilino  = modalType === 'income' ? (document.getElementById('m-inquilino')?.value || '') : '';
+  const cat        = modalType === 'income' ? 'aluguel' : document.getElementById('m-cat').value;
+  const manutDesc  = cat === 'manutencao' ? (document.getElementById('m-manutencao-desc')?.value.trim() || '') : '';
 
   if (!condo) { alert('Selecione o condomínio.'); return; }
   if (!val || val <= 0) { alert('Informe um valor válido.'); return; }
